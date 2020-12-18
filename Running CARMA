@@ -1,0 +1,30 @@
+library(carma)
+
+# Set the working directory to where the segmentation input files are
+setwd()
+
+# Get all the input file names to iterate through
+my_files <- list.files(pattern = "*.txt")
+
+# Iterate through the list and create a dataframe for each sample and add all the dataframes to a list
+my_data <- list()
+for (i in seq_along(my_files)) {
+    my_data[[i]] <- read.table(file = my_files[i], sep='\t', header = TRUE)
+}
+
+## There are three options when running CARMA, arm-level, whole chromosome level, and base level.
+# To run on a arm-level
+carma.res<- CARMA(my_data, region.type="arm", hg="hg19")
+     
+# To run on a whole chromosome level
+carma.res <- CARMA(my_data, region.type="chrom", hg="hg19")
+     
+# To run within 3*10^7 base pairs long regions
+carma.res <- CARMA(my_data, region.type="bin", bin.width=3*10^7, hg="hg19")
+
+## To plot the CARMA results
+# Plot per sample
+plotSample(carma.res, samples=c(1,2,3), plot.dir="~/Desktop/")
+
+# Plot everything 
+plotDataset(carma.res, plot.path="~/../../CARMA scores.png")
